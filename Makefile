@@ -16,7 +16,7 @@ CC = arm-none-eabi-gcc
 OBJCOPY=arm-none-eabi-objcopy
 
 # modify these to add/remove different code/object files
-C_OBJECTS = main.o syscalls.o
+C_OBJECTS = main.o syscalls.o uart.o debug.o
 S_OBJECTS = minimum_arm_image_def_block.o
 ELF = blink.elf
 BIN = $(ELF:.elf=.bin)
