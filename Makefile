@@ -104,7 +104,7 @@ flash: $(ELF)
 	$(OPENOCD) -c "program $(ELF) verify reset exit"
 
 debug: $(ELF)
-	arm-none-eabi-gdb -ex "target remote localhost:3333" -ex "monitor reset init" -ex "break Reset_Handler" $(ELF)
+	arm-none-eabi-gdb -ex "target remote localhost:3333" -ex "monitor reset init" -ex "break Reset_Handler"  -ex "monitor arm semihosting enable" $(ELF)
 
 openocd-server:
 	$(OPENOCD)
