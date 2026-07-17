@@ -10,4 +10,5 @@
 #define DEBUG_LED_PIN 19
 
 void debug_blink(int);
+uint64_t semihost_write_byte(const char *buf, uint32_t length);
 #endif
