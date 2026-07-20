@@ -56,6 +56,41 @@ void uart_unreset(void)
 
    
 }
+
+void clk_init(void) {
+
+  // Start the 12 MHz crystal
+  XOSC->CTRL = 0xaa0;
+  XOSC->STARTUP = 47;
+  XOSC->CTRL |= (0xfabU << 12);
+  while (!(XOSC->STATUS & (1u << 31)));
+
+  CLOCKS->CLK_SYS_CTRL &= ~1u;                  // SRC = clk_ref
+  while (!(CLOCKS->CLK_SYS_SELECTED & (1u << 0)));
+
+  //Bring PLL_SYS out of reset
+  *(volatile uint32_t *)((uintptr_t)&RESETS->RESET + REG_ALIAS_SET_BITS) = (1u << 14);
+  *(volatile uint32_t *)((uintptr_t)&RESETS->RESET + REG_ALIAS_CLR_BITS) = (1u << 14);
+  while (!(RESETS->RESET_DONE & (1u << 14)));
+
+  // Configure PLL_SYS for 150 MHz
+  PLL_SYS->CS = 1;                
+  PLL_SYS->FBDIV_INT = 125;       
+
+  PLL_SYS->PWR &= ~(PLL_PWR_PD_BITS | PLL_PWR_VCOPD_BITS);  
+  while (!(PLL_SYS->CS & PLL_CS_LOCK_BITS));               
+
+  PLL_SYS->PRIM = (5u << PLL_PRIM_POSTDIV1_LSB) | (2u << PLL_PRIM_POSTDIV2_LSB);
+  PLL_SYS->PWR &= ~PLL_PWR_POSTDIVPD_BITS;                
+
+
+  CLOCKS->CLK_SYS_CTRL &= ~(0x7u << 5);   
+  CLOCKS->CLK_SYS_CTRL |= 1u;             
+  while (!(CLOCKS->CLK_SYS_SELECTED & (1u << 1)));
+
+  // clk_peri running from clk_sys
+  CLOCKS->CLK_PERI_CTRL = (0u << 5) | (1u << 11);  // AUXSRC = clk_sys, ENABLE
+}
 uint32_t initialize(UART0_Type *uart, uint32_t baudrate)
 {
 
@@ -65,13 +100,16 @@ uint32_t initialize(UART0_Type *uart, uint32_t baudrate)
     // but I noticed the effect of its absence when the hardware is truly reset and I try to run serial communication
     // and it didn't work.
     // Start the 12 MHz crystal
-    XOSC->CTRL = 0xaa0;
-    XOSC->STARTUP = 47;
-    XOSC->CTRL |= (0xfabU << 12);
-    while (!(XOSC->STATUS & (1u << 31)));
+    // XOSC->CTRL = 0xaa0;
+    // XOSC->STARTUP = 47;
+    // XOSC->CTRL |= (0xfabU << 12);
+    // while (!(XOSC->STATUS & (1u << 31)));
 
-    // Feed clk_peri from the crystal directly (bypasses PLL/clk_sys entirely)
-    CLOCKS->CLK_PERI_CTRL = (4u << 5) | (1u << 11);
+    // // Feed clk_peri from the crystal directly (bypasses PLL/clk_sys entirely)
+    // CLOCKS->CLK_PERI_CTRL = (4u << 5) | (1u << 11);
+
+    // Instead setup pll and system clock and then feed the clk_peri from clk_sys
+    clk_init();
   
     // Reset  (on pico sdk it does this 
     // I guess it was not really on high (set) 

@@ -21,8 +21,15 @@
 #define UART_UARTFR_TXFF_BITS        (1u << 6)
 #define UART_UARTFR_RXFE_BITS       (1u << 4)
 
-#define CLK_PERI_HZ 12000000u 
+#define CLK_PERI_HZ 150000000u 
 
+#define PLL_PWR_PD_BITS (1u << 0)
+#define PLL_PWR_VCOPD_BITS   (1u << 5)
+#define PLL_CS_LOCK_BITS          (1u << 31)
+#define PLL_PWR_POSTDIVPD_BITS    (1u << 3)
+
+#define PLL_PRIM_POSTDIV1_LSB     16u
+#define PLL_PRIM_POSTDIV2_LSB     12u
 
 
 

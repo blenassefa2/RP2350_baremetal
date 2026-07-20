@@ -163,33 +163,33 @@ int main(void)
   // uart_putc_raw(UART_ID, 'A');
 
   // Send out a character but do CR/LF conversions
-  // uart_putc( UART_ID, 'B');
+  uart_putc( UART_ID, 'B');
 
   // Send out a string, with CR/LF conversions
-  // uart_puts(UART_ID, " Hello, UART!\n");
+  uart_puts(UART_ID, " Hello, UART!\n");
 
-  // while (true) 
-  // {
-  //   if (uart_is_readable(UART_ID)) {
-  //       char c = uart_getc(UART_ID);
-  //       if (c == '\r' || c == '\n') {
-  //           turn_led_on();
-  //           uart_puts(UART_ID, "Confirmed!!!!!\r\n");
-  //           for (int i = 0; i < WAIT_TIME; i++) {
-  //               ;
-  //           }
-  //           turn_led_off();
-  //       }
-  //   }
+  while (true) 
+  {
+    if (uart_is_readable(UART_ID)) {
+        char c = uart_getc(UART_ID);
+        if (c == '\r' || c == '\n') {
+            turn_led_on();
+            uart_puts(UART_ID, "Confirmed!!!!!\r\n");
+            for (int i = 0; i < WAIT_TIME; i++) {
+                ;
+            }
+            turn_led_off();
+        }
+    }
 
     
-  // }
+  }
   const char *buff = "Hello Semihosting!!";
   int result = semihost_write_byte(buff,  19) ;
 
   if (result == 0)
   {
-    uart_puts(UART_ID, "Success!");
+    uart_puts(UART_ID, "Success!\n");
     
   }
   else

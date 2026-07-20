@@ -73,7 +73,7 @@ LDFLAGS += --specs=nano.specs
 LDFLAGS += -Wl,--start-group -lc -lm -Wl,--end-group
 
 # shared openocd invocation for flash, openocd-server, reset
-OPENOCD = openocd -f interface/cmsis-dap.cfg -f target/rp2350.cfg -c "adapter speed 1000"
+OPENOCD = openocd -f interface/cmsis-dap.cfg -f target/rp2350.cfg -c "adapter speed 5000"
 
 .PHONY: all clean flash debug openocd-server reset size
 
