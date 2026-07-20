@@ -59,14 +59,20 @@ void uart_unreset(void)
 
 void clk_init(void) {
 
+  // temporarily change the system clock to source from ROSC instead of XOSC->PLL
+  // Since we are going to reset the PLL set up xosc 
+
+  // ROSC is an on-chip ring oscilator
+  CLOCKS->CLK_SYS_CTRL &= ~1u;                  
+  while (!(CLOCKS->CLK_SYS_SELECTED & (1u << 0)));
+
   // Start the 12 MHz crystal
   XOSC->CTRL = 0xaa0;
   XOSC->STARTUP = 47;
   XOSC->CTRL |= (0xfabU << 12);
   while (!(XOSC->STATUS & (1u << 31)));
 
-  CLOCKS->CLK_SYS_CTRL &= ~1u;                  // SRC = clk_ref
-  while (!(CLOCKS->CLK_SYS_SELECTED & (1u << 0)));
+  
 
   //Bring PLL_SYS out of reset
   *(volatile uint32_t *)((uintptr_t)&RESETS->RESET + REG_ALIAS_SET_BITS) = (1u << 14);
