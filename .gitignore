@@ -3,3 +3,5 @@ pico-sdk/
 *.elf
 *.bin
 *.uf2
+
+.DS_Store
