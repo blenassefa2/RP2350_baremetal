@@ -2,7 +2,12 @@
 
 #include "uart.h"
 
-
+/** 
+ * pll, clock and uart initialization as well as uart related functionalities
+ *
+ * Comments in this file document relevant portions of the original pico-sdk
+ * implementation and explain the changes made to eliminate the SDK dependency.
+ */
 
 uint32_t uart_set_baudrate( UART0_Type *uart, uint32_t baudrate) {
   // I'll jump this validation cause I trust my code for now
