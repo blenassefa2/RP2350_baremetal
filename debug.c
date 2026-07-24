@@ -1,5 +1,7 @@
 #include "debug.h"
-#include <stdint.h>
+/** 
+ * semihosting and blink feature for debugging
+ */
 
 void debug_delay(void)
 {
@@ -66,10 +68,10 @@ uint64_t semihost_write_byte(const char *buf, uint32_t length) {
     uint64_t result = -1;
 
     asm volatile (
-
-        // r0 must contain the result = 0
-        // if r0 contains a number greater than 0
-        // it indicates that number of bytes were failed to be written
+        // Based on arm documentation:
+        //      r0 must contain the result = 0
+        //      if r0 contains a number greater than 0
+        //      it indicates that number of bytes were failed to be written
         "movs %[result], r0\n"
         : [result] "=r" (result)
         :

@@ -133,18 +133,10 @@ int main(void)
   configure_led();
   turn_led_off();
   
-
-  debug_blink(1);
-  
- 
-
   initialize(UART_ID, BAUD_RATE);
 
-  // gpio_set_function is basically updating the io pins but with more abstraction
-  // simply it is like  PADS_BANK0->GPIO15 in the configure led in this current code
-  // 
-  // Set the TX and RX pins by using the function select on the GPIO
-  // Set datasheet for more information on function select
+  debug_blink(1); // set_up confirmation
+  
   // gpio_set_function(UART_TX_PIN, UART_FUNCSEL_NUM(UART_ID, UART_TX_PIN));
   // gpio_set_function(UART_RX_PIN, UART_FUNCSEL_NUM(UART_ID, UART_RX_PIN));
 
@@ -155,35 +147,7 @@ int main(void)
   PADS_BANK0->GPIO1    = 0x40;     // IE=1 — mandatory here, or RX reads nothing
 
 
-
-  // Use some the various UART functions to send out data
-  // In a default system, printf will also output via the default UART
-
-  // Send out a character without any conversions
-  // uart_putc_raw(UART_ID, 'A');
-
-  // Send out a character but do CR/LF conversions
-  uart_putc( UART_ID, 'B');
-
-  // Send out a string, with CR/LF conversions
-  uart_puts(UART_ID, " Hello, UART!\n");
-
-  while (true) 
-  {
-    if (uart_is_readable(UART_ID)) {
-        char c = uart_getc(UART_ID);
-        if (c == '\r' || c == '\n') {
-            turn_led_on();
-            uart_puts(UART_ID, "Confirmed!!!!!\r\n");
-            for (int i = 0; i < WAIT_TIME; i++) {
-                ;
-            }
-            turn_led_off();
-        }
-    }
-
-    
-  }
+  // -------------------- Semihosting Testing ----------------
   const char *buff = "Hello Semihosting!!";
   int result = semihost_write_byte(buff,  19) ;
 
@@ -197,6 +161,37 @@ int main(void)
     uart_puts(UART_ID, "Failure!\n");
     debug_blink(result);
   }
+
+
+  // ------------ Serial Line Testing -----------
+  // Use some the various UART functions to send out data
+
+  // Send out a character but do CR/LF conversions
+  uart_putc( UART_ID, 'B');
+
+  // Send out a string, with CR/LF conversions
+  uart_puts(UART_ID, " Hello, UART!\n");
+
+  while (true) 
+  {
+    if (uart_is_readable(UART_ID)) {
+        char c = uart_getc(UART_ID);
+        
+        // Send confirmation message if Enter key is recieved on the serial line
+        
+        if (c == '\r' || c == '\n') {
+            turn_led_on();
+            uart_puts(UART_ID, "Confirmed!!!!!\r\n");
+            for (int i = 0; i < WAIT_TIME; i++) {
+                ;
+            }
+            turn_led_off();
+        }
+    }
+
+    
+  }
+  
 
   while(1);
   return 0;

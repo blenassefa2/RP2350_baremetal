@@ -14,10 +14,12 @@ The project is tested on a Raspberry Pi Pico 2 microcontroller board and built o
 # Files
 
 - minimum_arm_image_def_block.s: minimal IMAGE_DEF block definition
-- main.c: main application
+- main.c: main application with semihosting test and serial line communication test
 - syscalls.c: syscall stubs
 - linker.ld: linker description script
 - Makefile: build, flash, and debug targets
+- debug.c: semihosting and blink feature for debugging
+- uart.c: pll, clock and uart initialization as well as uart related functionalities
 
 # Build
 
