@@ -39,4 +39,5 @@ void uart_putc(char c);
 void uart_puts(const char* s);
 bool uart_is_readable(void);
 char uart_getc(); // blocking read
+void uart_put_hex_byte(uint8_t byte);
 #endif

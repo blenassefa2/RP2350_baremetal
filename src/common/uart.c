@@ -157,3 +157,15 @@ char uart_getc() {
   uart_read_blocking((char *) &c, 1);
   return c;
 }
+
+void uart_put_hex_byte(uint8_t byte)
+{
+    static const char hex_digits[] = "0123456789abcdef";
+    char out[3];
+
+    out[0] = hex_digits[(byte >> 4) & 0x0F];
+    out[1] = hex_digits[byte & 0x0F];
+    out[2] = '\0';
+
+    uart_puts(out);
+}
