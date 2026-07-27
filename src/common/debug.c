@@ -4,13 +4,13 @@
 
 void debug_delay(void)
 {
-    for (volatile uint32_t i = 0; i < 3000000u; i++) { }
+    for (volatile uint32_t i = 0; i < 300000u; i++) { }
 }
 
 void configure_led()
 {
     // function 5 = SIO
-    *(volatile uint32_t *)(IO_BANK0_GPIO19_CTRL) = 0x05;
+    *(volatile uint32_t *)(IO_BANK0_GPIO19_CTRL) = GPIO_FUNCSEL_LED;
     *(volatile uint32_t *)(PADS_BANK0_GPIO19) = 0x34;
     // enable output
     *(volatile uint32_t *)(SIO_GPIO_OE_SET) = 0x01U << LED_PIN;

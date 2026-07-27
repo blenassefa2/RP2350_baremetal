@@ -11,6 +11,7 @@
 
 
 #define RESETS_UART0_BIT      (1u << 26)
+#define RESETS_PLL_BIT        (1u << 14)
 #define RESET_IO_BANK0_BITS   (1u << 6)
 #define RESET_PADS_BANK0_BITS (1u << 9)
 

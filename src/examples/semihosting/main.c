@@ -1,0 +1,74 @@
+// Copyright 2024 Mete Balci
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
+#include <stdbool.h>
+#include <stdint.h>
+#include "debug.h"
+#include "uart.h"
+// #include "flash.h"
+
+extern uint32_t _StackTop;
+
+
+
+void Default_Handler(void);
+void Reset_Handler(void);
+void NMI_Handler(void) __attribute__ ((weak, alias("Default_Handler")));
+void HardFault_Handler(void) __attribute__ ((weak));
+void MemManage_Handler(void) __attribute__ ((weak, alias("Default_Handler")));
+void BusFault_Handler(void) __attribute__ ((weak, alias("Default_Handler")));
+void UsageFault_Handler(void) __attribute__ ((weak, alias("Default_Handler")));
+void SecureFault_Handler(void) __attribute__ ((weak, alias("Default_Handler")));
+void SVC_Handler(void) __attribute__ ((weak, alias("Default_Handler")));
+void DebugMon_Handler(void) __attribute__ ((weak, alias("Default_Handler")));
+void PendSV_Handler(void) __attribute__ ((weak, alias("Default_Handler")));
+void SysTick_Handler(void) __attribute__ ((weak, alias("Default_Handler")));
+
+void Default_Handler(void)
+{
+  while (1);
+}
+
+void HardFault_Handler(void)
+{
+  configure_led();
+  debug_blink(5);   // distinct pattern = "I crashed"
+  while (1);
+  
+}
+
+#define BAUD_RATE 115200
+
+#define WAIT_TIME 400000u
+
+int main(void)
+{
+
+  configure_led();
+
+  debug_blink(1); // LED set_up confirmation
+
+  initialize(BAUD_RATE);
+
+  debug_blink(1); // UART set_up confirmation
+
+  // -------------------- Semihosting Testing ----------------
+  const char *buff = "Hello Semihosting!!";
+  int result = semihost_write_byte(buff,  19) ;
+
+  if (result == 0)
+  {
+    uart_puts(UART_ID, "Success!\n");
+    
+  }
+  else
+  {
+    uart_puts(UART_ID, "Failure!\n");
+    debug_blink(result);
+  }
+  // park
+  while(1);
+  return 0;
+}
+
