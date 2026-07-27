@@ -15,8 +15,12 @@ fpu ?= soft
 CC = arm-none-eabi-gcc
 OBJCOPY=arm-none-eabi-objcopy
 
+COMMON_SRC = $(wildcard ../../common/*.c)
+COMMON_OBJ = $(COMMON_SRC:.c=.o)
+
+
 # modify these to add/remove different code/object files
-C_OBJECTS = main.o syscalls.o uart.o debug.o
+C_OBJECTS = main.o ../../common/debug.o 
 S_OBJECTS = minimum_arm_image_def_block.o
 ELF = blink.elf
 BIN = $(ELF:.elf=.bin)
@@ -44,10 +48,10 @@ CFLAGS = -mcpu=cortex-m33 -mthumb -std=gnu11
 # floating point model
 CFLAGS += $(FLOATFLAGS)
 # includes
-CFLAGS += -I. -Ipico-sdk/src/rp2_common/cmsis/stub/CMSIS/Core/Include -Ipico-sdk/src/rp2_common/cmsis/stub/CMSIS/Device/RP2350/Include
+CFLAGS += -I../../../include
 
 # use newlib nano
-CFLAGS += --specs=nano.specs
+
 # put functions and data into individual sections
 CFLAGS += -ffunction-sections -fdata-sections
 CFLAGS += -Wall
@@ -55,7 +59,7 @@ CFLAGS += $(DEBUGFLAGS)
 
 ASFLAGS = -mcpu=cortex-m33 -mthumb
 ASFLAGS += $(FLOATFLAGS)
-ASFLAGS += --specs=nano.specs
+
 # enable c preprocessor in assembly source files
 ASFLAGS += -x assembler-with-cpp
 ASFLAGS += $(DEBUGFLAGS)
@@ -64,12 +68,11 @@ LDFLAGS = -mcpu=cortex-m33 -mthumb
 LDFLAGS += $(FLOATFLAGS)
 # use the linker script
 LDFLAGS += -T"linker.ld"
-# use the system call stubs
-LDFLAGS += --specs=nosys.specs 
+
 # remove empty sections only if not for debug
 LDFLAGS += -Wl,--gc-sections
 LDFLAGS += -static
-LDFLAGS += --specs=nano.specs
+
 LDFLAGS += -Wl,--start-group -lc -lm -Wl,--end-group
 
 # shared openocd invocation for flash, openocd-server, reset
@@ -80,12 +83,12 @@ OPENOCD = openocd -f interface/cmsis-dap.cfg -f target/rp2350.cfg -c "adapter sp
 all: $(UF2)
 
 clean:
-	rm -rf $(UF2) $(BIN) $(ELF) *.o
+	rm -rf $(UF2) $(BIN) $(ELF) *.o ../../common/*.o
 
-%.o: %.c Makefile | pico-sdk
+%.o: %.c 
 	$(CC) $(CFLAGS) -c -o $@ $<
 
-%.o: %.s Makefile | pico-sdk
+%.o: %.s
 	$(CC) $(ASFLAGS) -c -o $@ $<
 
 $(ELF): $(C_OBJECTS) $(S_OBJECTS) Makefile linker.ld
@@ -95,7 +98,7 @@ $(BIN): $(ELF)
 	$(OBJCOPY) -O binary $< $@
 
 $(UF2): $(BIN)
-	python3 uf2conv.py $< \
+	python3 ../../../scripts/uf2conv.py $< \
 		-b 0x10000000 \
 		-f 0xe48bff59 \
 		-o $@
@@ -114,6 +117,3 @@ reset:
 
 size: $(ELF)
 	arm-none-eabi-size $(ELF)
-
-pico-sdk:
-	git clone --depth 1 -b 2.2.0 https://github.com/raspberrypi/pico-sdk.git $@

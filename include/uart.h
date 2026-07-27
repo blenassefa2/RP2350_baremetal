@@ -11,12 +11,7 @@
 
 
 
-// Register address offsets for atomic RMW aliases
-#define REG_ALIAS_SET_BITS 0x2000u
-#define REG_ALIAS_CLR_BITS 0x3000u
 
-
-#define RESETS_UART0_BIT      (1u << 26)
 
 #define UART_UARTFR_TXFF_BITS        (1u << 6)
 #define UART_UARTFR_RXFE_BITS       (1u << 4)
