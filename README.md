@@ -1,13 +1,7 @@
 
 # Introduction
 
-This is a simple RP2350 application that runs on a [Raspberry Pi Pico 2](https://www.raspberrypi.com/products/raspberry-pi-pico-2/) microcontroller board that blinks the LED. The application can be built with Arm GNU Toolchain without using the Pico SDK build system (but Pico SDK is still required for CMSIS files). More information about this is given in my blog post [Using a Pico 2 RP2350 without the Pico SDK Build System](https://metebalci.com/blog/using-a-pico2-rp2350-without-the-pico-sdk-build-system/).
-
-# Requirements
-
-[Arm GNU Toolchain](https://developer.arm.com/downloads/-/arm-gnu-toolchain-downloads) is required to build the code. The RP2350's Cortex-M33 is an Armv8-M core, so the **AArch32 bare-metal target (`arm-none-eabi`)** must be used — not the AArch64 (`aarch64-none-elf`) variant. In order to flash (and debug if required), [openocd](https://github.com/raspberrypi/openocd) and a debug probe like [Raspberry Pi Debug Probe](https://www.raspberrypi.com/products/debug-probe/) is required. Alternatively, picotool can be used for flashing. Makefile's flash target uses openocd.
-
-The project is tested on a Raspberry Pi Pico 2 microcontroller board and built on mac using Arm GNU Toolchain 15.2.Rel1 (`arm-none-eabi`) and Pico SDK 2.2.0.
+This is a collection of simple RP2350 application examples that run on a [Raspberry Pi Pico 2](https://www.raspberrypi.com/products/raspberry-pi-pico-2/) microcontroller board.
 
 
 # Repository Structure
@@ -20,7 +14,7 @@ The project is tested on a Raspberry Pi Pico 2 microcontroller board and built o
 │   ├── uf2conv.py         # elf to uf2 converting script
 │   └── uf2famillies.json
 |
-├── include/
+├── include/               # rp2350 simple functionalities libraries
 │   ├── debug.h
 |   ├── gpio.h
 |   ├── ... 
@@ -31,10 +25,14 @@ The project is tested on a Raspberry Pi Pico 2 microcontroller board and built o
     │   ├── debug.c         # implementation of semihosting and blink feature for debugging 
     │   ├── uart.c          # implementation of serial connection initialization
     │   ├── ...             
-    │   └── flash.c         # implementation of flash programming and erasing functionalites
+    │   └── flash.c         # implementation of flash programming and erasing 
     │
-    └── examples/
-        ├── blink_led/        # simple usage of included libraries
+    └── examples/           # simple usage of included libraries
+        ├── blink_led/
+        |   ├── main.c                               # main application testing the example (blinking led)
+        |   ├── Makefile                             # build, flash, and debug targets
+        |   ├── linker.ld                            # linker description script
+        |   └── minimum_arm_image_def_block.s        # minimal IMAGE_DEF block definition and booting code
         ├── uart/
         ├── semihosting/
         ├── flash/
@@ -44,12 +42,24 @@ The project is tested on a Raspberry Pi Pico 2 microcontroller board and built o
 
 ```
 
-# Example File Structure
+# Example Execution
 
-- minimum_arm_image_def_block.s: minimal IMAGE_DEF block definition and booting code
-- main.c: main application with semihosting test and serial line communication test
-- linker.ld: linker description script
-- Makefile: build, flash, and debug targets
+1. Enter to one of the example directories
+```bash
+cd src/examples/[example]
+```
+
+2. Clean previous executions
+```bash
+make clean
+```
+
+3. Build then flash using OpenOCD
+```bash
+make
+make flash
+```
+
 
 # Build
 
@@ -87,7 +97,7 @@ If you are developing inside WSL on Windows, the USB debug probe is not visible 
    ```
    Note: udev requires systemd in WSL. Set `systemd=true` under `[boot]` in `/etc/wsl.conf` and run `wsl --shutdown` from Windows if udev rules don't take effect.
 
-4. **openocd adapter speed.** USB-IP forwarding adds latency; running openocd faster than ~2000 kHz over WSL may produce `USB write: late transfer competed` errors depending on the host environment. The Makefile is configured for 1000 kHz on the `flash`, `openocd-server`, and `reset` targets, which works on both native Linux and WSL — bump it back up if you are running natively and want faster flashing.
+4. **openocd adapter speed.** USB-IP forwarding adds latency; running openocd faster than ~2000 kHz over WSL may produce `USB write: late transfer competed` errors depending on the host environment. The Makefile is configured for 5000 kHz on the `flash`, `openocd-server`, and `reset` targets, which works on both native Linux and WSL — bump it back up if you are running natively and want faster flashing.
 
 After these steps, `make flash` and `make debug` work the same as on a native Linux host.
 
