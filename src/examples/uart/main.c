@@ -59,30 +59,30 @@ int main(void)
   // Use some the various UART functions to send out data
 
   // Send out a character but do CR/LF conversions
-  // uart_putc('B');
+  uart_putc('B');
 
-  // // Send out a string, with CR/LF conversions
-  // uart_puts( " Hello, UART!\n");
+  // Send out a string, with CR/LF conversions
+  uart_puts( " Hello, UART!\n");
 
-  // while (true) 
-  // {
-  //   if (uart_is_readable()) {
-  //       char c = uart_getc();
+  while (true) 
+  {
+    if (uart_is_readable()) {
+        char c = uart_getc();
         
-  //       // Send confirmation message if Enter key is recieved on the serial line
+        // Send confirmation message if Enter key is recieved on the serial line
         
-  //       if (c == '\r' || c == '\n') {
-  //           turn_led_on();
-  //           uart_puts("Confirmed!!!!!\r\n");
-  //           for (int i = 0; i < WAIT_TIME; i++) {
-  //               ;
-  //           }
-  //           turn_led_off();
-  //       }
-  //   }
+        if (c == '\r' || c == '\n') {
+            turn_led_on();
+            uart_puts("Confirmed!!!!!\r\n");
+            for (int i = 0; i < WAIT_TIME; i++) {
+                ;
+            }
+            turn_led_off();
+        }
+    }
 
     
-  // }
+  }
 
 
   
