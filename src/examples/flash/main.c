@@ -91,18 +91,23 @@ int main(void)
 
     semihost_puts("\nErasing...\n");
 
-    // I am assuming single core, no interrupts enabled,
+    // Assumption: single core, no interrupts enabled,
     // nothing else can be executing from flash concurrently
-    // if not then I need to implement safe flash execute function 
-    // that makes sure this assumption is met when executing these functinos
+    // if not then it is best to wrap with a safe flash execute function 
+    // that makes sure no other concurrent program is trying to update or read from the flash
     flash_range_erase(FLASH_TARGET_OFFSET, FLASH_SECTOR_SIZE);
+    
+    // Assumption: single core, no interrupts enabled,
+    // nothing else can be executing from flash concurrently
+    // if not then it is best to wrap with a safe flash execute function 
+    // that makes sure no other concurrent program is trying to update or read from the flash
     flash_start_xip();
 
     semihost_puts("Done:\n\n");
     print_buf(flash_target_contents, FLASH_PAGE_SIZE);
 
     semihost_puts("\nProgramming... \n");
-
+    
     flash_range_program(FLASH_TARGET_OFFSET, random_data, FLASH_PAGE_SIZE);
     flash_start_xip();
 
@@ -111,10 +116,10 @@ int main(void)
 
     semihost_puts("\nErasing...\n");
 
-    // I am assuming single core, no interrupts enabled,
+     // Assumption: single core, no interrupts enabled,
     // nothing else can be executing from flash concurrently
-    // if not then I need to implement safe flash execute function 
-    // that makes sure this assumption is met when executing these functinos
+    // if not then it is best to wrap with a safe flash execute function 
+    // that makes sure no other concurrent program is trying to update or read from the flash
     flash_range_erase(FLASH_TARGET_OFFSET, FLASH_SECTOR_SIZE);
     flash_start_xip();
 

@@ -5,6 +5,8 @@
 #include  <stdint.h>
 #include <stdbool.h>
 // To replace the __no_inline_not__in_flash_func macro and avoid issues of programming from flash while updating it
+// Currently, since the functions are using ROM routines, the flash is used
+// But later, for preventing issues, the linker.ld should be updated to keep this section on the RAM
 #define RAM_FUNC __attribute__((noinline, section(".ram_functions")))
 
 
