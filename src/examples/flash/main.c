@@ -5,7 +5,6 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include "debug.h"
-#include "uart.h"
 #include "flash.h"
 // #include "flash.h"
 
@@ -58,11 +57,11 @@ static void print_buf(const uint8_t *buf, uint32_t len)
 {
     for (uint32_t i = 0; i < len; ++i)
     {
-        uart_put_hex_byte(buf[i]);
+        semihost_put_hex(buf[i]);
         if (i % 16 == 15)
             uart_puts("\n");
         else
-            uart_puts(" ");
+        semihost_puts(" ");
     }
 }
 
@@ -83,18 +82,14 @@ int main(void)
 
     debug_blink(1); // LED set_up confirmation
 
-    initialize(BAUD_RATE);
-
-    debug_blink(1); // UART set_up confirmation
-
     uint8_t random_data[FLASH_PAGE_SIZE];
     for (unsigned i = 0; i < FLASH_PAGE_SIZE; ++i)
         random_data[i] = next_random_byte();
 
-    uart_puts("Generated data:\n");
-    // print_buf(random_data, FLASH_PAGE_SIZE);
+    semihost_puts("Generated data:\n");
+    print_buf(random_data, FLASH_PAGE_SIZE);
 
-    uart_puts("\nErasing...\n");
+    semihost_puts("\nErasing...\n");
 
     // I am assuming single core, no interrupts enabled,
     // nothing else can be executing from flash concurrently
@@ -103,16 +98,36 @@ int main(void)
     flash_range_erase(FLASH_TARGET_OFFSET, FLASH_SECTOR_SIZE);
     flash_start_xip();
 
-    uart_puts("Done:\n\n");
-    // print_buf(flash_target_contents, FLASH_PAGE_SIZE);
+    semihost_puts("Done:\n\n");
+    print_buf(flash_target_contents, FLASH_PAGE_SIZE);
 
-    uart_puts("\nProgramming \n");
+    semihost_puts("\nProgramming... \n");
 
     flash_range_program(FLASH_TARGET_OFFSET, random_data, FLASH_PAGE_SIZE);
     flash_start_xip();
 
-    uart_puts("Done:\n");
-    // print_buf(flash_target_contents, FLASH_PAGE_SIZE);
+    semihost_puts("Done:\n");
+    print_buf(flash_target_contents, FLASH_PAGE_SIZE);
+
+    semihost_puts("\nErasing...\n");
+
+    // I am assuming single core, no interrupts enabled,
+    // nothing else can be executing from flash concurrently
+    // if not then I need to implement safe flash execute function 
+    // that makes sure this assumption is met when executing these functinos
+    flash_range_erase(FLASH_TARGET_OFFSET, FLASH_SECTOR_SIZE);
+    flash_start_xip();
+
+    semihost_puts("Done:\n\n");
+    print_buf(flash_target_contents, FLASH_PAGE_SIZE);
+
+    semihost_puts("\nProgramming... \n");
+
+    flash_range_program(FLASH_TARGET_OFFSET, random_data, FLASH_PAGE_SIZE);
+    flash_start_xip();
+
+    semihost_puts("Done:\n");
+    print_buf(flash_target_contents, FLASH_PAGE_SIZE);
 
     bool mismatch = false;
     for (unsigned i = 0; i < FLASH_PAGE_SIZE; ++i)
@@ -122,9 +137,9 @@ int main(void)
     }
 
     if (mismatch)
-        uart_puts("Programming failed!\n");
+        semihost_puts("Programming failed!\n");
     else
-        uart_puts("Programming successful!\n");
+        semihost_puts("Programming successful!\n");
 
     // park
     while (1);

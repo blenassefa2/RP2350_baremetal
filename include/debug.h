@@ -12,4 +12,6 @@ void configure_led();
 void turn_led_on();
 void turn_led_off();
 uint64_t semihost_write_byte(const char *buf, uint32_t length);
+void semihost_put_hex(uint8_t byte);
+void semihost_puts(char *s);
 #endif

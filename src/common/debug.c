@@ -38,7 +38,7 @@ void debug_blink(int times)
     debug_delay();  // extra pause so blink groups are distinguishable
 }
 
-static void semihost_put_hex(uint8_t byte)
+void semihost_put_hex(uint8_t byte)
 {
     static const char hex_digits[] = "0123456789abcdef";
     char out[3];
@@ -50,7 +50,7 @@ static void semihost_put_hex(uint8_t byte)
     semihost_write_byte(out, 1);
 }
 
-static void semihost_puts(char *s)
+void semihost_puts(char *s)
 {
     // Compute length manually — avoid depending on <string.h>/strlen
     // if you don't have a libc linked in.
