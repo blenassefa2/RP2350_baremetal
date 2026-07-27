@@ -1,39 +1,71 @@
 #include "debug.h"
-/** 
- * semihosting and blink feature for debugging
- */
+#include "gpio.h"
+// #include "resets.h"
 
 void debug_delay(void)
 {
-    for (volatile uint32_t i = 0; i < 3000000u; i++) { }
+    for (volatile uint32_t i = 0; i < 300000u; i++) { }
+}
+
+void configure_led()
+{
+    // function 5 = SIO
+    *(volatile uint32_t *)(IO_BANK0_GPIO19_CTRL) = GPIO_FUNCSEL_LED;
+    *(volatile uint32_t *)(PADS_BANK0_GPIO19) = 0x34;
+    // enable output
+    *(volatile uint32_t *)(SIO_GPIO_OE_SET) = 0x01U << LED_PIN;
+}
+void turn_led_on()
+{
+    *(volatile uint32_t *)(SIO_GPIO_OUT_SET) = 0x01U << LED_PIN;
+}
+
+void turn_led_off()
+{
+    *(volatile uint32_t *)(SIO_GPIO_OUT_CLR) = 0x01U << LED_PIN;
 }
 
 void debug_blink(int times)
 {
     for (int i = 0; i < times; i++)
     {
-        SIO->GPIO_OUT_SET = 0x01U << DEBUG_LED_PIN;
+        turn_led_on();
         debug_delay();
-        SIO->GPIO_OUT_CLR = 0x01U << DEBUG_LED_PIN;
+        turn_led_off();
         debug_delay();
     }
     debug_delay();
     debug_delay();  // extra pause so blink groups are distinguishable
 }
 
-void semihost_exit()
+static void semihost_put_hex(uint8_t byte)
 {
-    register uint32_t op asm("r0") = 0x18u;
-    register uint32_t reason asm("r1") = 0x20026u;
+    static const char hex_digits[] = "0123456789abcdef";
+    char out[3];
 
-    asm volatile (
-        "bkpt 0xab\n"
-        :
-        : "r" (op), "r" (reason)
-        : "memory"
-    );
+    out[0] = hex_digits[(byte >> 4) & 0x0F];
+    out[1] = hex_digits[byte & 0x0F];
+    out[2] = '\0';
 
-    for (;;) { }
+    semihost_write_byte(out, 1);
+}
+
+static void semihost_puts(char *s)
+{
+    // Compute length manually — avoid depending on <string.h>/strlen
+    // if you don't have a libc linked in.
+    uint32_t len = 0;
+    while (s[len] != '\0')
+    {
+        len++;
+    }
+
+    if (len == 0)
+    {
+        return;
+    }
+
+    semihost_write_byte(s, len);
 }
 
 uint64_t semihost_write_byte(const char *buf, uint32_t length) {

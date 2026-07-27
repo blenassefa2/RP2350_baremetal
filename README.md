@@ -7,19 +7,49 @@ This is a simple RP2350 application that runs on a [Raspberry Pi Pico 2](https:/
 
 [Arm GNU Toolchain](https://developer.arm.com/downloads/-/arm-gnu-toolchain-downloads) is required to build the code. The RP2350's Cortex-M33 is an Armv8-M core, so the **AArch32 bare-metal target (`arm-none-eabi`)** must be used — not the AArch64 (`aarch64-none-elf`) variant. In order to flash (and debug if required), [openocd](https://github.com/raspberrypi/openocd) and a debug probe like [Raspberry Pi Debug Probe](https://www.raspberrypi.com/products/debug-probe/) is required. Alternatively, picotool can be used for flashing. Makefile's flash target uses openocd.
 
-[Pico SDK](https://github.com/raspberrypi/pico-sdk) is required to build the code, as it contains the CMSIS header and source files, but it is automatically downloaded by the Makefile. 
+The project is tested on a Raspberry Pi Pico 2 microcontroller board and built on mac using Arm GNU Toolchain 15.2.Rel1 (`arm-none-eabi`) and Pico SDK 2.2.0.
 
-The project is tested on a Raspberry Pi Pico 2 microcontroller board and built on Linux (Ubuntu 24.04) using Arm GNU Toolchain 15.2.Rel1 (`arm-none-eabi`) and Pico SDK 2.2.0.
 
-# Files
+# Repository Structure
 
-- minimum_arm_image_def_block.s: minimal IMAGE_DEF block definition
+```
+.
+├── Readme.md  
+├── .gitignore            
+├── scripts/             
+│   ├── uf2conv.py         # elf to uf2 converting script
+│   └── uf2famillies.json
+|
+├── include/
+│   ├── debug.h
+|   ├── gpio.h
+|   ├── ... 
+|   └── xosc.h
+└── src/
+    |
+    ├── common/             # implementation of included libraries
+    │   ├── debug.c         # implementation of semihosting and blink feature for debugging 
+    │   ├── uart.c          # implementation of serial connection initialization
+    │   ├── ...             
+    │   └── flash.c         # implementation of flash programming and erasing functionalites
+    │
+    └── examples/
+        ├── blink_led/        # simple usage of included libraries
+        ├── uart/
+        ├── semihosting/
+        ├── flash/
+        ├── mpu/
+        ...
+        └── feature_n/
+
+```
+
+# Example File Structure
+
+- minimum_arm_image_def_block.s: minimal IMAGE_DEF block definition and booting code
 - main.c: main application with semihosting test and serial line communication test
-- syscalls.c: syscall stubs
 - linker.ld: linker description script
 - Makefile: build, flash, and debug targets
-- debug.c: semihosting and blink feature for debugging
-- uart.c: pll, clock and uart initialization as well as uart related functionalities
 
 # Build
 
