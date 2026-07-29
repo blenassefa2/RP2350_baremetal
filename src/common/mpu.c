@@ -66,6 +66,7 @@ void mpu_set_normal_attribute(uint32_t attr_index, policy* outer, policy* inner)
     }
     const uint8_t attr = (uint8_t)((outer_nibble << 4U) | inner_nibble);
 
+    semihost_puts("\nattr_index: "); semihost_put_hex(attr_index);
     semihost_puts("\nreg: "); semihost_put_hex(reg);
     semihost_puts("\npos: "); semihost_put_hex(pos);
     semihost_puts("\nattr: "); semihost_put_hex(attr);
@@ -89,9 +90,9 @@ void mpu_set_device_attribute(uint32_t attr_index, DEVICE_TYPE type)
     }
     const uint8_t attr = (uint8_t)((type & 0x3U) << 2U);
 
-    semihost_puts("reg: "); semihost_put_hex(reg);
-    semihost_puts(" pos: "); semihost_put_hex(pos);
-    semihost_puts(" attr: "); semihost_put_hex(attr);
+    semihost_puts("\nreg: "); semihost_put_hex(reg);
+    semihost_puts("\npos: "); semihost_put_hex(pos);
+    semihost_puts("\nattr: "); semihost_put_hex(attr);
 
     MPU->MAIR[reg] = (MPU->MAIR[reg] & ~mask) |  ((attr << pos) & mask);
 }

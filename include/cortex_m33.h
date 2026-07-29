@@ -4,7 +4,9 @@
 
 #include <stdint.h>
 
-#define __OM volatile   /*! Defines 'write only' structure member permissions */
+#define     __IOM       volatile   /*! Defines 'read and write' structure member permissions */
+#define     __OM        volatile   /*! Defines 'write only' structure member permissions */
+#define     __IM        const volatile /*! Defines 'read  only' structure member permissions */
 
 __attribute__((always_inline)) static inline void __DMB(void)
 {
@@ -26,40 +28,40 @@ __attribute__((always_inline)) static inline void __ISB(void)
  */
  typedef struct
  {
-    volatile const uint32_t CPUID;                  /*!< Offset: 0x000 (R/ )  CPUID Base Register */
-    volatile uint32_t ICSR;                   /*!< Offset: 0x004 (R/W)  Interrupt Control and State Register */
-    volatile uint32_t VTOR;                   /*!< Offset: 0x008 (R/W)  Vector Table Offset Register */
-    volatile uint32_t AIRCR;                  /*!< Offset: 0x00C (R/W)  Application Interrupt and Reset Control Register */
-    volatile uint32_t SCR;                    /*!< Offset: 0x010 (R/W)  System Control Register */
-    volatile uint32_t CCR;                    /*!< Offset: 0x014 (R/W)  Configuration Control Register */
-    volatile uint8_t  SHPR[12U];              /*!< Offset: 0x018 (R/W)  System Handlers Priority Registers (4-7, 8-11, 12-15) */
-    volatile uint32_t SHCSR;                  /*!< Offset: 0x024 (R/W)  System Handler Control and State Register */
-    volatile uint32_t CFSR;                   /*!< Offset: 0x028 (R/W)  Configurable Fault Status Register */
-    volatile uint32_t HFSR;                   /*!< Offset: 0x02C (R/W)  HardFault Status Register */
-    volatile uint32_t DFSR;                   /*!< Offset: 0x030 (R/W)  Debug Fault Status Register */
-    volatile uint32_t MMFAR;                  /*!< Offset: 0x034 (R/W)  MemManage Fault Address Register */
-    volatile uint32_t BFAR;                   /*!< Offset: 0x038 (R/W)  BusFault Address Register */
-    volatile uint32_t AFSR;                   /*!< Offset: 0x03C (R/W)  Auxiliary Fault Status Register */
-    volatile const uint32_t ID_PFR[2U];             /*!< Offset: 0x040 (R/ )  Processor Feature Register */
-    volatile const uint32_t ID_DFR;                 /*!< Offset: 0x048 (R/ )  Debug Feature Register */
-    volatile const uint32_t ID_AFR;                 /*!< Offset: 0x04C (R/ )  Auxiliary Feature Register */
-    volatile const uint32_t ID_MMFR[4U];            /*!< Offset: 0x050 (R/ )  Memory Model Feature Register */
-    volatile const uint32_t ID_ISAR[6U];            /*!< Offset: 0x060 (R/ )  Instruction Set Attributes Register */
-    volatile const uint32_t CLIDR;                  /*!< Offset: 0x078 (R/ )  Cache Level ID register */
-    volatile const uint32_t CTR;                    /*!< Offset: 0x07C (R/ )  Cache Type register */
-    volatile const uint32_t CCSIDR;                 /*!< Offset: 0x080 (R/ )  Cache Size ID Register */
-    volatile uint32_t CSSELR;                 /*!< Offset: 0x084 (R/W)  Cache Size Selection Register */
-    volatile uint32_t CPACR;                  /*!< Offset: 0x088 (R/W)  Coprocessor Access Control Register */
-    volatile uint32_t NSACR;                  /*!< Offset: 0x08C (R/W)  Non-Secure Access Control Register */
+    __IM uint32_t CPUID;                  /*!< Offset: 0x000 (R/ )  CPUID Base Register */
+    __IOM uint32_t ICSR;                   /*!< Offset: 0x004 (R/W)  Interrupt Control and State Register */
+    __IOM uint32_t VTOR;                   /*!< Offset: 0x008 (R/W)  Vector Table Offset Register */
+    __IOM uint32_t AIRCR;                  /*!< Offset: 0x00C (R/W)  Application Interrupt and Reset Control Register */
+    __IOM uint32_t SCR;                    /*!< Offset: 0x010 (R/W)  System Control Register */
+    __IOM uint32_t CCR;                    /*!< Offset: 0x014 (R/W)  Configuration Control Register */
+    __IOM uint8_t  SHPR[12U];              /*!< Offset: 0x018 (R/W)  System Handlers Priority Registers (4-7, 8-11, 12-15) */
+    __IOM uint32_t SHCSR;                  /*!< Offset: 0x024 (R/W)  System Handler Control and State Register */
+    __IOM uint32_t CFSR;                   /*!< Offset: 0x028 (R/W)  Configurable Fault Status Register */
+    __IOM uint32_t HFSR;                   /*!< Offset: 0x02C (R/W)  HardFault Status Register */
+    __IOM uint32_t DFSR;                   /*!< Offset: 0x030 (R/W)  Debug Fault Status Register */
+    __IOM uint32_t MMFAR;                  /*!< Offset: 0x034 (R/W)  MemManage Fault Address Register */
+    __IOM uint32_t BFAR;                   /*!< Offset: 0x038 (R/W)  BusFault Address Register */
+    __IOM uint32_t AFSR;                   /*!< Offset: 0x03C (R/W)  Auxiliary Fault Status Register */
+    __IM uint32_t ID_PFR[2U];             /*!< Offset: 0x040 (R/ )  Processor Feature Register */
+    __IM uint32_t ID_DFR;                 /*!< Offset: 0x048 (R/ )  Debug Feature Register */
+    __IM uint32_t ID_AFR;                 /*!< Offset: 0x04C (R/ )  Auxiliary Feature Register */
+    __IM uint32_t ID_MMFR[4U];            /*!< Offset: 0x050 (R/ )  Memory Model Feature Register */
+    __IM uint32_t ID_ISAR[6U];            /*!< Offset: 0x060 (R/ )  Instruction Set Attributes Register */
+    __IM uint32_t CLIDR;                  /*!< Offset: 0x078 (R/ )  Cache Level ID register */
+    __IM uint32_t CTR;                    /*!< Offset: 0x07C (R/ )  Cache Type register */
+    __IM uint32_t CCSIDR;                 /*!< Offset: 0x080 (R/ )  Cache Size ID Register */
+    __IOM uint32_t CSSELR;                 /*!< Offset: 0x084 (R/W)  Cache Size Selection Register */
+    __IOM uint32_t CPACR;                  /*!< Offset: 0x088 (R/W)  Coprocessor Access Control Register */
+    __IOM uint32_t NSACR;                  /*!< Offset: 0x08C (R/W)  Non-Secure Access Control Register */
          uint32_t RESERVED7[21U];
-    volatile uint32_t SFSR;                   /*!< Offset: 0x0E4 (R/W)  Secure Fault Status Register */
-    volatile uint32_t SFAR;                   /*!< Offset: 0x0E8 (R/W)  Secure Fault Address Register */
+    __IOM uint32_t SFSR;                   /*!< Offset: 0x0E4 (R/W)  Secure Fault Status Register */
+    __IOM uint32_t SFAR;                   /*!< Offset: 0x0E8 (R/W)  Secure Fault Address Register */
          uint32_t RESERVED3[69U];
    __OM  uint32_t STIR;                   /*!< Offset: 0x200 ( /W)  Software Triggered Interrupt Register */
          uint32_t RESERVED4[15U];
-   volatile const  uint32_t MVFR0;                  /*!< Offset: 0x240 (R/ )  Media and VFP Feature Register 0 */
-   volatile const  uint32_t MVFR1;                  /*!< Offset: 0x244 (R/ )  Media and VFP Feature Register 1 */
-   volatile const  uint32_t MVFR2;                  /*!< Offset: 0x248 (R/ )  Media and VFP Feature Register 2 */
+   __IOM const  uint32_t MVFR0;                  /*!< Offset: 0x240 (R/ )  Media and VFP Feature Register 0 */
+   __IOM const  uint32_t MVFR1;                  /*!< Offset: 0x244 (R/ )  Media and VFP Feature Register 1 */
+   __IOM const  uint32_t MVFR2;                  /*!< Offset: 0x248 (R/ )  Media and VFP Feature Register 2 */
          uint32_t RESERVED5[1U];
    __OM  uint32_t ICIALLU;                /*!< Offset: 0x250 ( /W)  I-Cache Invalidate All to PoU */
          uint32_t RESERVED6[1U];

@@ -46,10 +46,10 @@ typedef struct
 * @var policy::NT  Non-Transient: Set to 1 for non-transient data.
 */
 typedef struct {
-    uint32_t WA     : 1; // bit 0
-    uint32_t RA     : 1; // bit 1
-    uint32_t WB     : 1; // bit 2  
-    uint32_t NT     : 1; // bit 3
+    unsigned WA     : 1; // bit 0
+    unsigned RA     : 1; // bit 1
+    unsigned WB     : 1; // bit 2  
+    unsigned NT     : 1; // bit 3
 }policy;
 
 typedef struct  {
@@ -67,9 +67,9 @@ typedef struct  {
  * E or nE – Early Write Acknowledge (similar to bufferable).
 */
 struct device_attribute {
-    uint32_t ignore         : 2; // bit 0 - 1
-    uint32_t device_type    : 2; // bit 2 - 3 (00) nGnRnE , (01) nGnRE, (10) nGRE, (11) GRE
-    uint32_t ignore2        : 4; // bit 4 - 7
+    unsigned ignore         : 2; // bit 0 - 1
+    unsigned device_type    : 2; // bit 2 - 3 (00) nGnRnE , (01) nGnRE, (10) nGRE, (11) GRE
+    unsigned ignore2        : 4; // bit 4 - 7
 };
 
 typedef enum  {
@@ -82,10 +82,10 @@ typedef enum  {
 
 
 typedef struct {
-    uint32_t executable     :   1;  // bit 0      : (0) execution in this region allowed (1) not allowed
-    uint32_t wr         :   2;  // bit 1 - 2  : (00) Read/write by privileged code only, (01) r/w by any level, (10)ro by privileged code only, (11) ro by any level
-    uint32_t shareability    :   2;  // bit 3 - 4  : (00) Non-sharable, (01) Outershareable, (10) innershareable
-    uint32_t base_address   :   27; // bit 5 - 31 : Starting address of the MPU region
+    unsigned executable     :   1;  // bit 0      : (0) execution in this region allowed (1) not allowed
+    unsigned wr         :   2;  // bit 1 - 2  : (00) Read/write by privileged code only, (01) r/w by any level, (10)ro by privileged code only, (11) ro by any level
+    unsigned shareability    :   2;  // bit 3 - 4  : (00) Non-sharable, (01) Outershareable, (10) innershareable
+    unsigned base_address   :   27; // bit 5 - 31 : Starting address of the MPU region
 }rbar_s;
 
 typedef enum  { 
@@ -103,10 +103,10 @@ typedef enum  {
 
 
 typedef struct  {
-    uint32_t region_enable  :   1;  // bit 0      : (0) not enabled (1) enabled
-    uint32_t attr_indx      :   3;  // bit 1 - 3  :  attribute sets from (0 - 3) MAIR0 and (4 - 7)MAIR1
-    uint32_t ignored        :   1;  // bit 4      : reserved bit for future  (set  to 0)
-    uint32_t limit_address  :   27; // bit 5 - 31 : Limiting address of the MPU region
+    unsigned region_enable  :   1;  // bit 0      : (0) not enabled (1) enabled
+    unsigned attr_indx      :   3;  // bit 1 - 3  :  attribute sets from (0 - 3) MAIR0 and (4 - 7)MAIR1
+    unsigned ignored        :   1;  // bit 4      : reserved bit for future  (set  to 0)
+    unsigned limit_address  :   27; // bit 5 - 31 : Limiting address of the MPU region
 }rlar_s;
 
 

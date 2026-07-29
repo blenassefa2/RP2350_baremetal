@@ -41,12 +41,13 @@ void HardFault_Handler(void)
 }
 void MemManage_Handler(void)
 {
+  semihost_puts("\n Test Failed!!  mpu_region is set!!!\n");
   volatile uint32_t mmfsr = *(volatile uint32_t*)0xE000ED28 & 0xFF; // bottom byte = MMFSR
   volatile uint32_t mmfar = *(volatile uint32_t*)0xE000ED34;         // faulting address
 
-  semihost_puts("MemManageFault at: ");
+  semihost_puts("\nMemManageFault at: ");
   semihost_put_hex(mmfar);
-  semihost_puts(" status: ");
+  semihost_puts("\nstatus: ");
   semihost_put_hex(mmfsr);
   semihost_puts("\n");
   while(1);  
@@ -105,19 +106,30 @@ void mpu_test( void ) {
   
   mpu_set_rlar(&limit, true, 1, 0x00003FFF);
 
-  region region;
+  mem_region region;
   mpu_set_region(&region, &base, &limit, 0);
 
-
+  
   mpu_enable();
 
   // This test should raise mem fault
-
+  
+  // test - 1 
+    volatile int x = 0;
+    uint32_t *ptr = (uint32_t *) 0x00003FF0;
+    
+    x = *ptr;   /* Read test  */
+    *ptr = 0xA;  /* Write test: ptr is in region 0 which has read only  access */
+  
+  // test - 2
   mpu_disable();
-  mpu_unset_region(region);
+  mpu_unset_region(&region);
   mpu_enable();
 
   // Because the region is unset it shouldn't memfault
+  *ptr = 0xA;  /* Write test: ptr is in region 0 which has read only  access */
+
+  semihost_puts("\nWrite-test passed!! becuse mpu_region is unset\n");
  
 }
 
