@@ -47,7 +47,22 @@ void semihost_put_hex(uint8_t byte)
     out[1] = hex_digits[byte & 0x0F];
     out[2] = '\0';
 
-    semihost_write_byte(out, 1);
+    semihost_write_byte(out, 2);
+}
+void semihost_put_hex32(uint32_t value)
+{
+    static const char hex_digits[] = "0123456789abcdef";
+    char out[9]; 
+
+    for (int i = 0; i < 8; i++)
+    {
+        
+        uint32_t shift = (7U - (uint32_t)i) * 4U;
+        out[i] = hex_digits[(value >> shift) & 0x0FU];
+    }
+    out[8] = '\0';
+
+    semihost_write_byte(out, 8);
 }
 
 void semihost_puts(char *s)
