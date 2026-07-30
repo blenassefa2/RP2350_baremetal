@@ -4,9 +4,11 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+
+
+#include "flash.h"  
+#include "uart.h"
 #include "debug.h"
-#include "flash.h"
-// #include "flash.h"
 
 extern uint32_t _StackTop;
 
@@ -37,13 +39,6 @@ void HardFault_Handler(void)
   while (1);
   
 }
-
-#define BAUD_RATE 115200
-
-
-#include "flash.h"  
-#include "uart.h"
-#include "debug.h"
 
 
 
@@ -87,7 +82,7 @@ int main(void)
         random_data[i] = next_random_byte();
 
     semihost_puts("Generated data:\n");
-    print_buf(random_data, FLASH_PAGE_SIZE);
+    // print_buf(random_data, FLASH_PAGE_SIZE);
 
     semihost_puts("\nErasing...\n");
 
@@ -104,7 +99,7 @@ int main(void)
     flash_start_xip();
 
     semihost_puts("Done:\n\n");
-    print_buf(flash_target_contents, FLASH_PAGE_SIZE);
+    // print_buf(flash_target_contents, FLASH_PAGE_SIZE);
 
     semihost_puts("\nProgramming... \n");
     
@@ -112,7 +107,7 @@ int main(void)
     flash_start_xip();
 
     semihost_puts("Done:\n");
-    print_buf(flash_target_contents, FLASH_PAGE_SIZE);
+    // print_buf(flash_target_contents, FLASH_PAGE_SIZE);
 
     semihost_puts("\nErasing...\n");
 
@@ -124,7 +119,7 @@ int main(void)
     flash_start_xip();
 
     semihost_puts("Done:\n\n");
-    print_buf(flash_target_contents, FLASH_PAGE_SIZE);
+    // print_buf(flash_target_contents, FLASH_PAGE_SIZE);
 
     semihost_puts("\nProgramming... \n");
 
@@ -132,7 +127,7 @@ int main(void)
     flash_start_xip();
 
     semihost_puts("Done:\n");
-    print_buf(flash_target_contents, FLASH_PAGE_SIZE);
+    // print_buf(flash_target_contents, FLASH_PAGE_SIZE);
 
     bool mismatch = false;
     for (unsigned i = 0; i < FLASH_PAGE_SIZE; ++i)
@@ -142,9 +137,9 @@ int main(void)
     }
 
     if (mismatch)
-        semihost_puts("Programming failed!\n");
+        semihost_puts("Content doesn't match!! Programming failed!\n");
     else
-        semihost_puts("Programming successful!\n");
+        semihost_puts("Content matches!! Programming successful!\n");
 
     // park
     while (1);
