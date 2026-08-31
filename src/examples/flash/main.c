@@ -96,7 +96,7 @@ int main(void)
     // nothing else can be executing from flash concurrently
     // if not then it is best to wrap with a safe flash execute function 
     // that makes sure no other concurrent program is trying to update or read from the flash
-    flash_start_xip();
+    // flash_start_xip();
 
     semihost_puts("Done:\n\n");
     // print_buf(flash_target_contents, FLASH_PAGE_SIZE);
@@ -104,7 +104,7 @@ int main(void)
     semihost_puts("\nProgramming... \n");
     
     flash_range_program(FLASH_TARGET_OFFSET, random_data, FLASH_PAGE_SIZE);
-    flash_start_xip();
+    // flash_start_xip();
 
     semihost_puts("Done:\n");
     // print_buf(flash_target_contents, FLASH_PAGE_SIZE);
@@ -116,18 +116,18 @@ int main(void)
     // if not then it is best to wrap with a safe flash execute function 
     // that makes sure no other concurrent program is trying to update or read from the flash
     flash_range_erase(FLASH_TARGET_OFFSET, FLASH_SECTOR_SIZE);
-    flash_start_xip();
+    // flash_start_xip();
 
     semihost_puts("Done:\n\n");
-    // print_buf(flash_target_contents, FLASH_PAGE_SIZE);
+    print_buf(flash_target_contents, FLASH_PAGE_SIZE);
 
     semihost_puts("\nProgramming... \n");
 
     flash_range_program(FLASH_TARGET_OFFSET, random_data, FLASH_PAGE_SIZE);
-    flash_start_xip();
+    // flash_start_xip();
 
     semihost_puts("Done:\n");
-    // print_buf(flash_target_contents, FLASH_PAGE_SIZE);
+    print_buf(flash_target_contents, FLASH_PAGE_SIZE);
 
     bool mismatch = false;
     for (unsigned i = 0; i < FLASH_PAGE_SIZE; ++i)

@@ -120,11 +120,13 @@ typedef struct {
 
 void mpu_enable();
 void mpu_disable();
+
 void mpu_set_policy(policy * p, bool write_allocation, bool read_allocation, bool write_back, bool non_transient);
 void mpu_set_normal_attribute(uint32_t attr_index, policy* outer, policy* inner);
 void mpu_set_device_attribute(uint32_t attr_index, DEVICE_TYPE attr);
 void mpu_set_rbar(rbar_s* base, bool executable, WR readability, SHARABILITY sharability, uint32_t base_address);
 void mpu_set_rlar(rlar_s* limit, bool region_enable, uint32_t attr_indx, uint32_t limit_address);
+
 void mpu_set_region(mem_region* region, rbar_s* base, rlar_s* limit, uint32_t rnr);
 void mpu_unset_region(mem_region* region);
 

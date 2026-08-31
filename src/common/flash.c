@@ -96,20 +96,20 @@ RAM_FUNC void flash_range_erase(uint32_t flash_offs, uint32_t count) {
         while (1); // lookup failed — halt rather than jump into garbage
     }
        
-    flash_init_boot2_copyout();
+    // flash_init_boot2_copyout();
      
     // I am jumping this part because it is more for external additional flash memory (I think)
     // flash_hardware_save_state_t state;
     // flash_save_hardware_state(&state);
     // No flash accesses after this point
-    __compiler_memory_barrier();
+    // __compiler_memory_barrier();
 
     connect_internal_flash_func();
     flash_exit_xip_func();
-    flash_range_erase_func(flash_offs, count, FLASH_BLOCK_SIZE, FLASH_BLOCK_ERASE_CMD);
+    flash_range_erase_func(flash_offs, count, 0, 0);
     flash_flush_cache_func(); // Note this is needed to remove CSn IO force as well as cache flushing
     
-    flash_enable_xip_via_boot2();
+    // flash_enable_xip_via_boot2();
 }
 
 
@@ -128,20 +128,20 @@ RAM_FUNC void flash_range_program(uint32_t flash_offs, const uint8_t *data, uint
         while (1); // lookup failed — halt rather than jump into garbage
     }
 
-    flash_init_boot2_copyout();
+    // flash_init_boot2_copyout();
     // I am jumping this part because it is more for external additional flash memory (I think)
     // flash_hardware_save_state_t state;
     // flash_save_hardware_state(&state);
     // No flash accesses after this point
 
-    __compiler_memory_barrier();
+    // __compiler_memory_barrier();
 
     connect_internal_flash_func();
     flash_exit_xip_func();
     flash_range_program_func(flash_offs, data, count);
     flash_flush_cache_func(); // Note this is needed to remove CSn IO force as well as cache flushing
     
-    flash_enable_xip_via_boot2();
+    // flash_enable_xip_via_boot2();
 
     // flash_restore_hardware_state(&state);
 }

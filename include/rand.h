@@ -10,6 +10,12 @@
 
 #define TRNG_RNG_IMR_OFFSET 0x00000100
 
+#define TRNG_AUTOCORR_ERR (1u << 1)
+#define TRNG_CRNGT_ERR    (1u << 2)
+#define TRNG_VN_ERR       (1u << 3)
+
+#define TRNG_ALARM_MASK \
+    (TRNG_AUTOCORR_ERR | TRNG_CRNGT_ERR | TRNG_VN_ERR)
 
 typedef struct {
 

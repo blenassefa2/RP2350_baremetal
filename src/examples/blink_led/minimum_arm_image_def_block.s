@@ -63,7 +63,41 @@ __Vectors:
 Reset_Handler:
     bl     .Lcopy_data
     bl     .Lzero_bss
-    b      main
+    bl      turn_led_on
+
+    .align 2
+    .thumb_func
+turn_led_on:
+    ldr     r3, =0x4002809c
+    movs    r2, #0x5
+    str     r2, [r3]
+
+    ldr     r3, =0x40038050
+    movs    r2, #0x34
+    str     r2, [r3]
+
+    ldr     r2, =0x80000
+    ldr     r3, =0xd0000038
+    str     r2, [r3]
+
+    movs    r4, #2
+loop:
+    ldr     r3, =0xd0000018     @ OUT_SET
+    str     r2, [r3]
+    ldr     r0, =0x100000
+d1: subs    r0, r0, #1
+    bne     d1
+
+    ldr     r3, =0xd0000020     @ OUT_CLR
+    str     r2, [r3]
+    ldr     r0, =0x100000
+d2: subs    r0, r0, #1
+    bne     d2
+
+    subs    r4, r4, #1
+    bne     loop
+    
+    bx      lr
 
     .align 2
     .thumb_func
