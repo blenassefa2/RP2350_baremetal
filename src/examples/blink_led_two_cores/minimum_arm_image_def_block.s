@@ -63,8 +63,8 @@ __Vectors:
 Reset_Handler:
     bl     .Lcopy_data
     bl     .Lzero_bss
-    bl      turn_led_on
-
+    bl      core0_main
+1:  b       1b  // park core 0
     .align 2
     .thumb_func
 turn_led_on:

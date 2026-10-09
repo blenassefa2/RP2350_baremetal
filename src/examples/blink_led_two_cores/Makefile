@@ -20,9 +20,9 @@ COMMON_OBJ = $(COMMON_SRC:.c=.o)
 
 
 # modify these to add/remove different code/object files
-C_OBJECTS = main.o ../../common/debug.o 
+C_OBJECTS = core0.o core1.o ../../common/debug.o 
 S_OBJECTS = minimum_arm_image_def_block.o
-ELF = blink.elf
+ELF = blink_led_two_cores.elf
 BIN = $(ELF:.elf=.bin)
 UF2 = $(BIN:.bin=.uf2)
 
