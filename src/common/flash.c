@@ -145,3 +145,18 @@ RAM_FUNC void flash_range_program(uint32_t flash_offs, const uint8_t *data, uint
 
     // flash_restore_hardware_state(&state);
 }
+
+
+void enable_xip_cache(bool enable)
+{
+    const uint32_t mask = XIP_CTRL_EN_SECURE | XIP_CTRL_EN_NONSECURE;
+    uint32_t ctrl = XIP_CTRL_CTRL;
+
+    if (enable)
+        ctrl |= mask;
+    else
+        ctrl &= ~mask;
+
+    XIP_CTRL_CTRL = ctrl;
+    __asm volatile ("dsb" : : : "memory");
+}

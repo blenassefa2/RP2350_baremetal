@@ -39,6 +39,11 @@
 
 #define FLASH_BLOCK_ERASE_CMD 0xd8
 
+#define XIP_CTRL_BASE            0x400c8000u
+#define XIP_CTRL_CTRL            (*(volatile uint32_t *)(XIP_CTRL_BASE + 0x00))
+#define XIP_CTRL_EN_SECURE       (1u << 0)
+#define XIP_CTRL_EN_NONSECURE    (1u << 1)
+
 typedef void (*rom_connect_internal_flash_fn)(void);
 typedef void (*rom_flash_exit_xip_fn)(void);
 typedef void (*rom_flash_flush_cache_fn)(void);
@@ -51,4 +56,5 @@ RAM_FUNC void flash_start_xip(void);
 RAM_FUNC void flash_range_erase(uint32_t flash_offs, uint32_t count);
 RAM_FUNC void flash_range_program(uint32_t flash_offs, const uint8_t *data, uint32_t count);
 
+void enable_xip_cache(bool enable);
 #endif

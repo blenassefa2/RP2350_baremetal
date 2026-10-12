@@ -16,4 +16,6 @@
 #define RESET_PADS_BANK0_BITS (1u << 9)
 
 
+#define RESET_TIMER0       (1u << 23)
+
 #endif
