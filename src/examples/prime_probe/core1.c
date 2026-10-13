@@ -60,8 +60,8 @@ void core1_main(void)
       foo();
       e = cycle_now();
       
-      foo_time[cpu1_counter] = (uint32_t)(e - s); 
-      timestamp_core1[cpu1_counter] = e;
+      foo_time[cpu1_counter - 1] = (uint32_t)(e - s);
+      timestamp_core1[cpu1_counter - 1] = e;
      
       
   
