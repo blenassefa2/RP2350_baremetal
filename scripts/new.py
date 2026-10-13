@@ -49,9 +49,11 @@ for ax, data, label, color in zip(axes.flat, [d1, d2, d3, d4], labels, colors):
  
 
 axes[1, 2].plot(d1, label="$1", color='blue')
-axes[1, 2].plot(d4, label="$4", color='red')
+for i, timestamp in enumerate(d4):
+    if timestamp != 0:
+        axes[1, 2].axvline(i, color='red', alpha=0.5)
 axes[1, 2].set_title("Together")
-axes[1, 2].legend()
+axes[1, 2].legend(["foo_time(core1)", "foo(core0)"])
 
 plt.tight_layout()
 plt.savefig("measurements.png")

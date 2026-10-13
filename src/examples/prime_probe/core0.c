@@ -209,8 +209,8 @@ void core0_main(void) {
 
         counter++;
         
-        cpu0_counter++;
         timestamp_core0[cpu0_counter] = cycle_now();
+        cpu0_counter++;
         // this method is constant and always have a constant distance before executing foo
         // if (counter == SECRET) {
 
