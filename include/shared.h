@@ -20,6 +20,9 @@ extern uint32_t cpu1_counter;
 extern volatile atomic_bool cpu1_running;
 extern volatile atomic_bool cpu0_running;
 
+extern volatile atomic_bool cpu0_continue;
+extern volatile atomic_bool cpu1_probe;
+
 extern volatile atomic_bool cache_flushed;
 
 

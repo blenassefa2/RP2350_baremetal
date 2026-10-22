@@ -34,7 +34,7 @@ if len(sys.argv) < 2:
 arrays = load_numbers_from_txt(pathlib.Path(sys.argv[1]))
 
 if len(arrays) < 4:
-    print(f"Expected 3 arrays, found {len(arrays)}")
+    print(f"Expected 4 arrays, found {len(arrays)}")
     sys.exit(1)
 
 d1, d2, d3 , d4 = arrays[0], arrays[1], arrays[2], arrays[3]
