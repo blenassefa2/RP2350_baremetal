@@ -199,7 +199,7 @@ void core0_main(void) {
        
         while (!atomic_load_explicit(&cpu0_continue, memory_order_acquire));
        
-        if (counter == -1)
+        if (counter == 0)
         {
           uint32_t ti = cycle_now();
             foo();
