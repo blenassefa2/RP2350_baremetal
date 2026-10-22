@@ -135,15 +135,15 @@ static int* get_random_data(void)
 #define REPEATS 1000
 #define SECRET 60
 
-__attribute__((noinline, section(".victim_text"), used))
-static uint32_t additional_block(uint32_t x) {
-    // Keep this instruction-heavy so accesses are dominated by XIP fetches.
-    x ^= 0xA5A5A5A5u;
-    x = (x << 3) | (x >> 29);
-    x += 0x1234u;
-    // __asm volatile ("nop\n nop\n nop\n nop");
-    return x;
-}
+// __attribute__((noinline, section(".victim_text"), used))
+// static uint32_t additional_block(uint32_t x) {
+//     // Keep this instruction-heavy so accesses are dominated by XIP fetches.
+//     x ^= 0xA5A5A5A5u;
+//     x = (x << 3) | (x >> 29);
+//     x += 0x1234u;
+//     // __asm volatile ("nop\n nop\n nop\n nop");
+//     return x;
+// }
 
 void not_important(){
     __asm volatile ("nop\n nop\n nop\n nop");
@@ -153,9 +153,12 @@ void not_important(){
 */
 __attribute__((section(".victim_text"))) void foo(void) {
     volatile uint32_t sink = 0;
-    for (int i = 0; i < 64; i++) {
-        sink ^= additional_block((uint32_t)i);
-    }
+    uint32_t x = 64;
+    x ^= 0xA5A5A5A5u;
+    x = (x << 3) | (x >> 29);
+    x += 0x1234u;
+      sink ^=(uint32_t)x;
+    
     (void)sink;
 }
 
@@ -196,10 +199,13 @@ void core0_main(void) {
        
         while (!atomic_load_explicit(&cpu0_continue, memory_order_acquire));
        
-        if (counter == secret_data[d])
+        if (counter == -1)
         {
+          uint32_t ti = cycle_now();
             foo();
-            zero[cpu0_counter] = cycle_now();
+            foo();
+            uint32_t tf = cycle_now();
+            zero[cpu0_counter] = tf - ti;
             d++;
         }
         else
@@ -212,11 +218,11 @@ void core0_main(void) {
         timestamp_core0[cpu0_counter] = cycle_now();
         cpu0_counter++;
         // this method is constant and always have a constant distance before executing foo
-        // if (counter == SECRET) {
+        if (counter == SECRET) {
 
-        //     counter = 0;
+            counter = 0;
 
-        // }
+        }
         shared_counter += 1;
 
         atomic_store_explicit(&cpu1_probe, true, memory_order_release);

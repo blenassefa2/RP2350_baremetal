@@ -9,7 +9,7 @@
 #define WAIT_WINDOW  0        // optional extra spin-cycles between prime and probe
 #define SPY_TIME     1000
 
- #define  FOO_SETS 8
+ #define  FOO_SETS 16
 
 
  #define THRESHOLD 7000
@@ -23,9 +23,22 @@
  extern void spy6(void);
  extern void spy7(void);
 
+ extern void spy0_1(void);
+ extern void spy1_1(void);
+ extern void spy2_1(void);
+ extern void spy3_1(void);
+ extern void spy4_1(void);
+ extern void spy5_1(void);
+ extern void spy6_1(void);
+ extern void spy7_1(void);
+
 static void (*addrs[FOO_SETS])(void) = {
     spy0, spy1, spy2, spy3,
-    spy4, spy5, spy6, spy7
+    spy4, spy5, spy6, spy7, 
+    spy0_1, spy1_1, spy2_1, spy3_1,
+    spy4_1, spy5_1, spy6_1, spy7_1,
+
+
 };
 static inline void prime(void)
 {
@@ -34,18 +47,23 @@ static inline void prime(void)
     }
 }
 
-static inline void probe(void)
-{
-    for (int i = 0; i < FOO_SETS; i++) {
-        ((void (*)(void))(addrs[i]))();
-    }
-}
+
 
 
 uint32_t foo_time[SPY_TIME];
-uint32_t foo_time2[SPY_TIME];
+uint32_t foo_time2[SPY_TIME][FOO_SETS];
 uint32_t timestamp_core1[SPY_TIME];
 uint32_t foo_count;
+
+static inline void probe(int iter)
+{
+    for (int i = 0; i < FOO_SETS; i++) {
+        uint32_t ti = cycle_now();
+        ((void (*)(void))(addrs[i]))();
+        uint32_t tf = cycle_now();
+        foo_time2[iter][i] = tf - ti;
+    }
+}
 
 void core1_main(void)
 {
@@ -54,6 +72,8 @@ void core1_main(void)
 
     for (int i = 0; i < SPY_TIME; i++) {
         foo_time[i] = 0;
+        for (int j= 0; j < FOO_SETS; j++)
+        foo_time2[i][j] = 0;
     }
 
     atomic_store_explicit(&cpu1_running, true, memory_order_release);
@@ -62,18 +82,14 @@ void core1_main(void)
 
         prime();                  // execute all 7 sets' eviction sets
         
-        probe();
-        probe();
-        
         cpu1_counter++;
         
         atomic_store_explicit(&cpu0_continue, true, memory_order_release);
         while (!atomic_load_explicit(&cpu1_probe, memory_order_acquire));   // let core0 run (may call foo here)
 
-        
        
         uint32_t t0 = cycle_now();
-        probe();
+        probe(cpu1_counter - 1);
         uint32_t t1 = cycle_now();
         foo_time[cpu1_counter - 1] = t1 - t0;
 

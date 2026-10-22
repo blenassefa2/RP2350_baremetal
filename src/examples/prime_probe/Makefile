@@ -137,6 +137,8 @@ dump_6_1: $(ELF)
 	-ex "p timestamp_core0" \
 	-ex "set print elements 0" \
 	-ex "p zero" \
+	-ex "set print elements 0" \
+	-ex "p foo_time2" \
 	-ex "set logging enabled off" \
 	-ex "dump binary memory spy_results.bin foo_time foo_time+10" \
 	-ex "quit"

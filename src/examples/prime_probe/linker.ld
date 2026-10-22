@@ -31,6 +31,7 @@ PHDRS
     text   PT_LOAD FLAGS(5);
     victim PT_LOAD FLAGS(5);
     spy    PT_LOAD FLAGS(5);
+    spy2    PT_LOAD FLAGS(5);
     data   PT_LOAD FLAGS(6);
     bss    PT_LOAD FLAGS(6);
 }
@@ -59,6 +60,10 @@ SECTIONS
 {
     KEEP(*(.spy_prime))
 } >FLASH :spy
+.spy_prime 0x10014000 :
+{
+    KEEP(*(.spy_prime_1))
+} >FLASH :spy2
 
   . = ALIGN(4);
   __data_source__ = .;
